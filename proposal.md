@@ -15,6 +15,7 @@ We propose to build a dashboard that allows a manager to visualize historical da
 The overarching research question we are interested in is:
 > For which days of the week, time of day and departments can staffing be improved?
 
-
+Usage scenario:
+This interface will show 8 
 
 
