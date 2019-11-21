@@ -11,4 +11,8 @@ We propose to build a dashboard that allows a manager to visualize historical da
 
 ## 2. Description of the data
 
-## 3. Research questions
+## 3. Research questions and usage scenarios
+The overarching research question we are interested in is:
+> For which days of the week, time of day and departments can staffing be improved? 
+
+
