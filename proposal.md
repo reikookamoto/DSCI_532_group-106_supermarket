@@ -1,6 +1,6 @@
 # Supermarket Sales Dashboard: Proposal
 
-Authors: Reiko Okamoto, Monique Wong and Clara Su
+Authors: Reiko Okamoto, Monique Wong and Haoyu Su
 
 Date: November 23, 2019
 
