@@ -16,5 +16,6 @@ What we are going to look at is the quarterly sales data of three branches of th
 The overarching research question we are interested in is:
 > For which days of the week, time of day and departments can staffing be improved?
 
-
+Usage scenario:
+This interface will show 8 
 
