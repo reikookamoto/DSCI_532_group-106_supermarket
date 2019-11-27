@@ -48,7 +48,9 @@ def update_graph(DayofWeek, TimeofDay, branch_index, func, pltTitle):
     chart = alt.Chart(new_df).mark_bar(color = "cornflowerblue").encode(
             alt.X('Product line:N'),
             alt.Y(func, type ='quantitative'),
-            tooltip=[alt.Tooltip('Product line', title = 'Day of the week'),
+            tooltip=[alt.Tooltip('Product line', title = 'Product line'),
+                     alt.Tooltip('Day_of_week', title = "Day of Week"),
+                     alt.Tooltip('Time_of_day', title = "Time of Day"),
                      alt.Tooltip(func, title = pltTitle)]
         ).transform_filter(
             alt.FieldEqualPredicate(field='Branch', equal= branch_index)
