@@ -9,10 +9,11 @@ from dash.dependencies import Input, Output
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
 
-app.title = 'Dash app with pure Altair HTML'
+app.title = 'Supermarket Dashboard'
 
-# load data
-df = pd.read_csv('./data/supermarket_sales.csv',
+# load data, .py should be run in `src` directory in this case 
+# if you are going to run from home directory, change path to '/data/supermarket_sales.csv'
+df = pd.read_csv('../data/supermarket_sales.csv',
                  parse_dates = {'Date_time': ['Date', 'Time']})
 
 # Add day of the week
@@ -32,7 +33,7 @@ evening['Time_of_day'] = 'Evening'
 
 new_df = pd.concat([morning, afternoon, evening])
 
-def update_graph(DayofWeek, TimeofDay, func, pltTitle, branch_index):
+def update_graph(DayofWeek, TimeofDay, branch_index, func, pltTitle):
     '''
     plot barplots of different functions for specific DayofWeek and TimeofDay 
     
@@ -58,21 +59,26 @@ def update_graph(DayofWeek, TimeofDay, func, pltTitle, branch_index):
         ).properties(width=280, height=200, title= pltTitle)
     return chart
 
-def con_plt(DayofWeek = "Monday", TimeofDay = "Morning"):
-    plt1 = update_graph(DayofWeek, TimeofDay, 'sum(Total)', "Total Sales", "A")
-    plt2 = update_graph(DayofWeek, TimeofDay, 'count(Invoice ID)', "Customer Traffic", "A")
-    plt3 = update_graph(DayofWeek, TimeofDay, "mean(Total)", "Average Transaction Size", "A")
-    plt4 = update_graph(DayofWeek, TimeofDay, "mean(Rating)", "Average Satisfaction", "A")
+def con_plt(DayofWeek = "Monday", TimeofDay = "Morning", branch_index = "A"):
+    plt1 = update_graph(DayofWeek, TimeofDay, branch_index, 'sum(Total)', "Total Sales")
+    plt2 = update_graph(DayofWeek, TimeofDay, branch_index, 'count(Invoice ID)', "Customer Traffic")
+    plt3 = update_graph(DayofWeek, TimeofDay, branch_index, "mean(Total)", "Average Transaction Size")
+    plt4 = update_graph(DayofWeek, TimeofDay, branch_index, "mean(Rating)", "Average Satisfaction")
     
     return alt.concat(plt1, plt2, plt3, plt4, columns=4)
 
-con_plt("Monday", "Morning")
+con_plt("Monday", "Morning", "A")
 
 app.layout = html.Div([
+    html.Label('Please choose Store'),
+    dcc.RadioItems(
+        id = 'Store',
+        options = [{'label': i, 'value': i} for i in ["A", "B", "C"]],
+        value = 'Branch'),
     html.Label('Please choose Day of Week'),
     dcc.Dropdown(
         id = 'DayofWeek',
-        options = [{'label': i, 'value': i} for i in new_df['Day_of_week'].unique()],
+        options = [{'label': i, 'value': i} for i in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]],
         value = 'Day of Week'),
     html.Label('Please choose Time of Day'),
     dcc.Dropdown(
@@ -86,20 +92,18 @@ app.layout = html.Div([
         width='1400',
         style={'border-width': '5px'},
 
-        ################ The magic happens here
-        #srcDoc=open('complex_chart.html').read()
         srcDoc = con_plt().to_html()
-        ################ The magic happens here
         ),
 ])
 
 @app.callback(
     dash.dependencies.Output('plot', 'srcDoc'),
     [dash.dependencies.Input('DayofWeek', 'value'),
-     dash.dependencies.Input('TimeofDay', 'value')])
+     dash.dependencies.Input('TimeofDay', 'value'),
+     dash.dependencies.Input('Store', 'value')])
 
-def update_plot(DayofWeek, TimeofDay):
-    updated_plot = con_plt(DayofWeek, TimeofDay).to_html()
+def update_plot(DayofWeek, TimeofDay, branch_index):
+    updated_plot = con_plt(DayofWeek, TimeofDay, branch_index).to_html()
     return updated_plot
 
 
