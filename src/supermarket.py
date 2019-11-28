@@ -105,7 +105,7 @@ def update_heatmap(branch_index, func, pltTitle):
               alt.Tooltip('sum(Total):Q', title='Sales', format='$,.0f')]
     ).transform_filter(
             alt.FieldEqualPredicate(field='Branch', equal= branch_index)
-    ).properties(width=250, height=150, title='Total Sales'
+    ).properties(width=250, height=150, title=pltTitle
     ).configure_axis(labelFontSize=14, titleFontSize=14
     ).configure_title(fontSize=16)
     return chart
