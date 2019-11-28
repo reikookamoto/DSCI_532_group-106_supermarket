@@ -107,7 +107,3 @@ app.layout = html.Div([
 def update_plot(DayofWeek, TimeofDay, branch_index):
     updated_plot = con_plt(DayofWeek, TimeofDay, branch_index).to_html()
     return updated_plot
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
