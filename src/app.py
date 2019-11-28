@@ -2,12 +2,9 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 import altair as alt
-import vega_datasets
 import pandas as pd
 import altair as alt
-import datetime as dt
 
 # Import cleaned data
 df = pd.read_csv('../data/supermarket_sales_clean.csv')
