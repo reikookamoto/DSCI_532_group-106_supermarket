@@ -1,5 +1,6 @@
 import dash
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import altair as alt
@@ -39,7 +40,7 @@ def make_heat_map(branch_index, func, plot_title):
                         alt.Y('Time_of_day:N', title=None, sort=times),
                         alt.Color(func, type = 'quantitative' ,title=None, scale=alt.Scale(scheme='greens')),
                         tooltip=[alt.Tooltip('Day_of_week', title='Day of the week'), 
-                                 alt.Tooltip('Time_of_day', title="Time of the day"),
+                                 alt.Tooltip('Time_of_day', title='Time of the day'),
                                  alt.Tooltip(func, type='quantitative', title=plot_title, format=',.0f')])
                 .configure_axisX(labelAngle=45)
                 .transform_filter(alt.FieldEqualPredicate(field='Branch', equal= branch_index))
@@ -50,22 +51,22 @@ def make_heat_map(branch_index, func, plot_title):
     return heat_map
     
 def make_total_sales(branch_index='A'):
-    total_sales = make_heat_map(branch_index, 'sum(Total)', "Total Sales")
+    total_sales = make_heat_map(branch_index, 'sum(Total)', 'Total Sales')
 
     return total_sales
 
 def make_customer_traffic(branch_index='A'):
-    customer_traffic = make_heat_map(branch_index, 'count(Invoice ID)', "Customer Traffic")
+    customer_traffic = make_heat_map(branch_index, 'count(Invoice ID)', 'Customer Traffic')
 
     return customer_traffic
 
 def make_transaction_size(branch_index='A'):
-    transaction_size = make_heat_map(branch_index, 'mean(Total)', "Average Transaction Size")
+    transaction_size = make_heat_map(branch_index, 'mean(Total)', 'Average Transaction Size')
 
     return transaction_size
 
 def make_customer_satisfaction(branch_index='A'):
-    customer_satisfaction = make_heat_map(branch_index, 'mean(Rating)', "Average Satisfaction")
+    customer_satisfaction = make_heat_map(branch_index, 'mean(Rating)', 'Average Satisfaction')
 
     return customer_satisfaction
 
@@ -86,8 +87,8 @@ def make_bar_plot(day_of_week, time_of_day, branch_index, func, plot_title, y_ti
                 .encode(alt.X('Product line:N', title=None),
                         alt.Y(func, type='quantitative', title=y_title),
                         tooltip=[alt.Tooltip('Product line', title='Product line'),
-                                alt.Tooltip('Day_of_week', title="Day of Week"),
-                                alt.Tooltip('Time_of_day', title="Time of Day"),
+                                alt.Tooltip('Day_of_week', title='Day of Week'),
+                                alt.Tooltip('Time_of_day', title='Time of Day'),
                                 alt.Tooltip(func, title=plot_title)])
                 .transform_filter(alt.FieldEqualPredicate(field='Branch', equal=branch_index))
                 .transform_filter(alt.FieldEqualPredicate(field='Day_of_week', equal=day_of_week))
@@ -97,10 +98,10 @@ def make_bar_plot(day_of_week, time_of_day, branch_index, func, plot_title, y_ti
     return bar_plot
 
 def con_plt(day_of_week='Monday', time_of_day='Morning', branch_index='A'):
-    bar_plot_sales = make_bar_plot(day_of_week, time_of_day, branch_index, 'sum(Total)', "Total Sales", "Sales in MMK")
-    bar_plot_traffic = make_bar_plot(day_of_week,time_of_day, branch_index, 'count(Invoice ID)', "Customer Traffic", "Transactions")
-    bar_plot_trans = make_bar_plot(day_of_week, time_of_day, branch_index, 'mean(Total)', "Average Transaction Size", "Sales in MMK")
-    bar_plot_rating = make_bar_plot(day_of_week, time_of_day, branch_index, 'mean(Rating)', "Average Satisfaction", "Rating")
+    bar_plot_sales = make_bar_plot(day_of_week, time_of_day, branch_index, 'sum(Total)', 'Total Sales', 'Sales in MMK')
+    bar_plot_traffic = make_bar_plot(day_of_week,time_of_day, branch_index, 'count(Invoice ID)', 'Customer Traffic', 'Transactions')
+    bar_plot_trans = make_bar_plot(day_of_week, time_of_day, branch_index, 'mean(Total)', 'Average Transaction Size', 'Sales in MMK')
+    bar_plot_rating = make_bar_plot(day_of_week, time_of_day, branch_index, 'mean(Rating)', 'Average Satisfaction', 'Rating')
     
     return (alt.concat(bar_plot_sales, bar_plot_traffic, bar_plot_trans, bar_plot_rating, columns=4)
                 .configure_axis(labelFontSize=13, titleFontSize=13)
@@ -108,68 +109,64 @@ def con_plt(day_of_week='Monday', time_of_day='Morning', branch_index='A'):
                 .configure_axisX(labelAngle=45)
             )
 
-con_plt("Monday", "Morning", "A")
-make_total_sales("A")
-make_customer_traffic("A")
-make_transaction_size("A")
-make_customer_traffic("A")
+con_plt('Monday', 'Morning', 'A')
+make_total_sales('A')
+make_customer_traffic('A')
+make_transaction_size('A')
+make_customer_traffic('A')
 
 app.layout = html.Div([
-    html.H1("Supermarket Staffing"),
+    html.H1('Supermarket Staffing'),
     html.Label('Select store:'),
     
     # Arrange radio buttoms to select branch
     dcc.RadioItems(
         id='Store',
         options=[
-            {'label': 'Yangon Store', 'value': 'A'},
-            {'label': 'Mandalay Store', 'value': 'B'},
-            {'label': 'Naypyitaw Store', 'value': 'C'}
+            {'label': 'Yangon', 'value': 'A'},
+            {'label': 'Mandalay', 'value': 'B'},
+            {'label': 'Naypyitaw', 'value': 'C'}
         ],
         value='A'),
     
-    html.H2("Store Performance Summary"),
+    html.H2('Store Performance Summary'),
 
-    html.Div([
+    dbc.Row([
         # Arrange total sales heat map
-        html.Iframe(
-            sandbox='allow-scripts',
-            id='total_sales',
-            height='300',
-            width='370',
-            style={'border-width': '0px'},
-            srcDoc=make_total_sales().to_html()
-            ),
+        html.Iframe(sandbox='allow-scripts',
+                            id='total_sales',
+                            height='300',
+                            width='370',
+                            style={'border-width': '0px'},
+                            srcDoc=make_total_sales().to_html()
+                            ),
         
         # Arrange customer traffic heat map
-        html.Iframe(
-            sandbox='allow-scripts',
-            id='customer_traffic',
-            height='300',
-            width='370',
-            style={'border-width': '0px'},
-            srcDoc=make_customer_traffic().to_html()
-            ),
+        html.Iframe(sandbox='allow-scripts',
+                            id='customer_traffic',
+                            height='300',
+                            width='370',
+                            style={'border-width': '0px'},
+                            srcDoc=make_customer_traffic().to_html()
+                            ),
         
         # Arrange average transaction size heat map
-        html.Iframe(
-            sandbox='allow-scripts',
-            id='transaction_size',
-            height='300',
-            width='370',
-            style={'border-width': '0px'},
-            srcDoc=make_transaction_size().to_html()
-            ),
+        html.Iframe(sandbox='allow-scripts',
+                            id='transaction_size',
+                            height='300',
+                            width='370',
+                            style={'border-width': '0px'},
+                            srcDoc=make_transaction_size().to_html()
+                            ),
         
         # Arrange customer satisfaction heat map
-        html.Iframe(
-            sandbox='allow-scripts',
-            id='customer_satisfaction',
-            height='300',
-            width='370',
-            style={'border-width': '0px'},
-            srcDoc=make_customer_satisfaction().to_html()
-            )
+        html.Iframe(sandbox='allow-scripts',
+                            id='customer_satisfaction',
+                            height='300',
+                            width='370',
+                            style={'border-width': '0px'},
+                            srcDoc=make_customer_satisfaction().to_html()
+                            )
     ]),
     
     html.Label('Select day of week:'),
@@ -177,7 +174,7 @@ app.layout = html.Div([
     # Arrange dropdown menu to select day of week
     dcc.Dropdown(
         id='day_of_week',
-        options=[{'label': i, 'value': i} for i in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]],
+        options=[{'label': i, 'value': i} for i in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']],
         value='Monday'),
     
     html.Label('Select time of day:'),
@@ -188,7 +185,7 @@ app.layout = html.Div([
         options=[{'label': i, 'value': i} for i in df['Time_of_day'].unique()],
         value='Morning'),
     
-     html.H2("Store Performance By Department"),
+     html.H2('Store Performance By Department'),
 
     # Arrange bar plots
     html.Iframe(
