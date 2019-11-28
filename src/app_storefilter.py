@@ -202,6 +202,3 @@ def update_plot(store_id):
 
 
    return updated_total_sales, updated_customer_traffic, updated_transaction_size, updated_customer_satisfaction
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
