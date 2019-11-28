@@ -17,7 +17,7 @@ app.title = 'Supermarket team scheduling dashboard'
 # To run from `src` directory keep code below
 # To run from home directory, change path to '/data/supermarket_sales.csv'
 
-df = pd.read_csv('data/supermarket_sales_clean.csv')
+df = pd.read_csv('../data/supermarket_sales_clean.csv')
 
 def make_heat_map(branch_index, func, plot_title):
     
@@ -51,21 +51,25 @@ def make_heat_map(branch_index, func, plot_title):
     return heat_map
     
 def make_total_sales(branch_index='A'):
+    """Create total sales heat map"""
     total_sales = make_heat_map(branch_index, 'sum(Total)', 'Total Sales')
 
     return total_sales
 
 def make_customer_traffic(branch_index='A'):
+    """Create customer traffic heat map"""
     customer_traffic = make_heat_map(branch_index, 'count(Invoice ID)', 'Customer Traffic')
 
     return customer_traffic
 
 def make_transaction_size(branch_index='A'):
+    """Create average transaction size heat map"""
     transaction_size = make_heat_map(branch_index, 'mean(Total)', 'Average Transaction Size')
 
     return transaction_size
 
 def make_customer_satisfaction(branch_index='A'):
+    """Create average customer satisfaction heat map"""
     customer_satisfaction = make_heat_map(branch_index, 'mean(Rating)', 'Average Satisfaction')
 
     return customer_satisfaction
@@ -98,6 +102,7 @@ def make_bar_plot(day_of_week, time_of_day, branch_index, func, plot_title, y_ti
     return bar_plot
 
 def con_plt(day_of_week='Monday', time_of_day='Morning', branch_index='A'):
+    """Concatenate all bar plots"""
     bar_plot_sales = make_bar_plot(day_of_week, time_of_day, branch_index, 'sum(Total)', 'Total Sales', 'Sales in MMK')
     bar_plot_traffic = make_bar_plot(day_of_week,time_of_day, branch_index, 'count(Invoice ID)', 'Customer Traffic', 'Transactions')
     bar_plot_trans = make_bar_plot(day_of_week, time_of_day, branch_index, 'mean(Total)', 'Average Transaction Size', 'Sales in MMK')
@@ -108,12 +113,6 @@ def con_plt(day_of_week='Monday', time_of_day='Morning', branch_index='A'):
                 .configure_title(fontSize=14)
                 .configure_axisX(labelAngle=45)
             )
-
-con_plt('Monday', 'Morning', 'A')
-make_total_sales('A')
-make_customer_traffic('A')
-make_transaction_size('A')
-make_customer_traffic('A')
 
 app.layout = html.Div([
     html.H1('Supermarket Staffing'),
@@ -198,7 +197,6 @@ app.layout = html.Div([
         ),
 ])
 
-# Update heat maps
 @app.callback(
     [Output('total_sales', 'srcDoc'),
      Output('customer_traffic', 'srcDoc'),
@@ -208,6 +206,7 @@ app.layout = html.Div([
      [dash.dependencies.Input('Store', 'value')])
 
 def update_plot(branch_index):
+    """Update heat maps"""
     updated_total_sales = make_total_sales(branch_index).to_html()
     updated_customer_traffic = make_customer_traffic(branch_index).to_html()
     updated_transaction_size= make_transaction_size(branch_index).to_html()
@@ -215,7 +214,6 @@ def update_plot(branch_index):
 
     return updated_total_sales, updated_customer_traffic, updated_transaction_size, updated_customer_satisfaction
 
-# Update bar plots
 @app.callback(
     dash.dependencies.Output('bar_plots', 'srcDoc'),
     [dash.dependencies.Input('day_of_week', 'value'),
@@ -223,6 +221,7 @@ def update_plot(branch_index):
      dash.dependencies.Input('Store', 'value')])
 
 def update_plot(day_of_week, time_of_day, branch_index):
+    """Update bar plots"""
     bar_plots = con_plt(day_of_week, time_of_day, branch_index).to_html()
     return bar_plots
 
