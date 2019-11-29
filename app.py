@@ -17,7 +17,7 @@ app.title = 'Supermarket team scheduling dashboard'
 # To run from `src` directory keep code below
 # To run from home directory, change path to '/data/supermarket_sales.csv'
 
-df = pd.read_csv('/data/supermarket_sales_clean.csv')
+df = pd.read_csv('data/supermarket_sales_clean.csv')
 
 def make_heat_map(branch_index, func, plot_title):
     
