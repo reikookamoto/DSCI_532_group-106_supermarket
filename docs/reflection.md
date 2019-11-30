@@ -1,4 +1,4 @@
-# Reflection
+# Reflection for Milestone 2
 
 Authors: Reiko Okamoto, Monique Wong and Haoyu Su
 
