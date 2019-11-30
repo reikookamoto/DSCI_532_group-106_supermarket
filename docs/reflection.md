@@ -34,9 +34,9 @@ While our dashboard is a sufficient minimum viable product, it has its limitatio
 
 ## Responding to GitHub issues
 * Work distribution: This week, work was split up as follows:
- * Initial charts on Jupyter notebook: Reiko and Monique
- * Implementing app.py without interactivity: Reiko
- * Adding store selection interactivity: Monique
- * Department-specific interactivity: Haoyu (Clara)
- * Deployment: everyone during lab
- * Reflection: Monique
+  * Initial charts on Jupyter notebook: Reiko and Monique
+  * Implementing app.py without interactivity: Reiko
+  * Adding store selection interactivity: Monique
+  * Department-specific interactivity: Haoyu (Clara)
+  * Deployment: everyone during lab
+  * Reflection: Monique
