@@ -33,7 +33,7 @@ While our dashboard is a sufficient minimum viable product, it has its limitatio
   * Solving this limitation would require access to past staffing data so that we can compare staffing levels to performance to make more informed staffing decisions
 
 ## Responding to GitHub issues
-* **Work distribution:** This week, work was split up as follows...
+* This week, work was split up as follows:
   * Initial charts on Jupyter notebook: Reiko and Monique
   * Implementing app.py without interactivity: Reiko
   * Adding store selection interactivity: Monique
