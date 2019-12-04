@@ -116,6 +116,11 @@ def con_plt(day_of_week='Monday', time_of_day='Morning', branch_index='A'):
 
 app.layout = html.Div([
     html.H1('Supermarket Staffing'),
+
+    dcc.Markdown('''
+    Review past performance by store to improve staffing of the sales floor at your store
+    '''),
+
     html.Label('Select store:'),
     
     # Arrange radio buttoms to select branch
@@ -129,6 +134,18 @@ app.layout = html.Div([
         value='A'),
     
     html.H2('Store Performance Summary'),
+
+    dcc.Markdown('''
+    **Purpose:**  Identify days and time periods of interest whether overstaffing or understaffing is happening
+
+    **Some guiding questions:**
+    - Are there periods of time with **high total sales**, **high customer traffic**, **high transaction sizes** but **low customer satisfaction**? 
+        - Have we previously understaffed when the store is busy?
+    - Are there periods of time with **low total sales**, **low customer traffic**, **low transaction sizes** and **high customer satisfaction**?
+        - Have we previously overstaffed when the store is quiet?
+    - Are there periods of **high customer traffic** but **small transaction sizes**?
+        - Would additional staff helping customers persuade customers to spend more? 
+    '''),
 
     dbc.Row([
         # Arrange total sales heat map
@@ -167,8 +184,22 @@ app.layout = html.Div([
                             srcDoc=make_customer_satisfaction().to_html()
                             )
     ]),
+
+    html.H2('Compare Store Performance By Department'),
+
+    dcc.Markdown('''
+    **Purpose:** Compare department-specific performance for a particular day and time to identify departments to add or reduce staff
+
+    **Guiding example:** I'm considering adding staff to Sunday evening. I could consider staffing more in Sports & Travel where there is highest traffic and lowest satisfaction. 
+    Before deciding, I can compare performance to Saturday afternoon. Sports and travel seems to also have high customer traffic but much lower transaction sizes on Saturday afternoon compared to Sunday evenings. 
+    I should staff more in Sports & Travel on Saturday afternoons instead. 
+    '''),
+
+    dcc.Markdown('''
+    **Select first shift to compare:**
+    '''),
     
-    html.Label('Select day of week:'),
+    html.Label('Day of week:'),
     
     # Arrange dropdown menu to select day of week
     dcc.Dropdown(
@@ -176,20 +207,48 @@ app.layout = html.Div([
         options=[{'label': i, 'value': i} for i in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']],
         value='Monday'),
     
-    html.Label('Select time of day:'),
+    html.Label('Time of day:'),
     
     # Arrange dropdown menu to select time of day
     dcc.Dropdown(
         id='time_of_day',
         options=[{'label': i, 'value': i} for i in df['Time_of_day'].unique()],
         value='Morning'),
-    
-     html.H2('Store Performance By Department'),
 
     # Arrange bar plots
     html.Iframe(
         sandbox='allow-scripts',
         id='bar_plots',
+        height='400',
+        width='1500',
+        style={'border-width': '0px'},
+        srcDoc=con_plt().to_html()
+        ),
+
+    dcc.Markdown('''
+    **Select second shift to compare:**
+    '''),
+
+      html.Label('Day of week:'),
+    
+    # Arrange dropdown menu to select day of week
+    dcc.Dropdown(
+        id='day_of_week2',
+        options=[{'label': i, 'value': i} for i in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']],
+        value='Monday'),
+    
+    html.Label('Time of day:'),
+    
+    # Arrange dropdown menu to select time of day
+    dcc.Dropdown(
+        id='time_of_day2',
+        options=[{'label': i, 'value': i} for i in df['Time_of_day'].unique()],
+        value='Morning'),
+
+    # Arrange bar plots
+    html.Iframe(
+        sandbox='allow-scripts',
+        id='bar_plots2',
         height='400',
         width='1500',
         style={'border-width': '0px'},
@@ -225,6 +284,16 @@ def update_plot(day_of_week, time_of_day, branch_index):
     bar_plots = con_plt(day_of_week, time_of_day, branch_index).to_html()
     return bar_plots
 
+@app.callback(
+    dash.dependencies.Output('bar_plots2', 'srcDoc'),
+    [dash.dependencies.Input('day_of_week2', 'value'),
+     dash.dependencies.Input('time_of_day2', 'value'),
+     dash.dependencies.Input('Store', 'value')])
+
+def update_plot(day_of_week, time_of_day, branch_index):
+    """Update bar plots"""
+    bar_plots = con_plt(day_of_week, time_of_day, branch_index).to_html()
+    return bar_plots
 
 if __name__ == '__main__':
     app.run_server(debug=True)
